@@ -1,10 +1,43 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { nanoid } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { nanoid } from '@reduxjs/toolkit';
+import { sub } from 'date-fns';
+
+// const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
 
 const initialState = [
-    { id: 1, title: 'Learning Redux Toolkit', content: 'I have heard good things.' },
-    { id: 2, title: 'Slices...', content: 'The more I say slice, the more I want pizza.' }
+    {
+        id: 1,
+        title: 'Learning Redux Toolkit',
+        content: 'I have heard good things.',
+        date: sub(new Date(), { minutes: 10 }).toISOString(),
+        reactions: {
+            thumbsUp: 0,
+            wow: 0,
+            heart: 0,
+            rocket: 0,
+            coffee: 0,
+        }
+    },
+    {
+        id: 2,
+        title: 'Slices...',
+        content: 'The more I say slice, the more I want pizza.',
+        date: sub(new Date(), { minutes: 5 }).toISOString(),
+        reactions: {
+            thumbsUp: 0,
+            wow: 0,
+            heart: 0,
+            rocket: 0,
+            coffee: 0,
+        }
+    }
 ];
+
+// const initialState = {
+//     posts: [],
+//     status: 'idle', // 'idle' | 'loading' | 'succeded' | 'failed'
+//     error: null
+// };
 
 const postSlice = createSlice({
     name: 'post',
@@ -20,9 +53,24 @@ const postSlice = createSlice({
                         id: nanoid(),
                         title,
                         content,
-                        userId
+                        date: new Date().toISOString(),
+                        userId,
+                        reactions: {
+                            thumbsUp: 0,
+                            wow: 0,
+                            heart: 0,
+                            rocket: 0,
+                            coffee: 0,
+                        }
                     }
                 }
+            }
+        },
+        reactionAdded (state, action) {
+            const { postId, reaction } = action.payload;
+            const existingPost = state.find(post => post.id === postId);
+            if(existingPost) {
+                existingPost.reactions[reaction]++;
             }
         }
     }
@@ -30,6 +78,6 @@ const postSlice = createSlice({
 
 export const selectAllPosts = (state) => state.posts;
 
-export const { postAdded } = postSlice.actions;
+export const { postAdded, reactionAdded } = postSlice.actions;
 
 export default postSlice.reducer;

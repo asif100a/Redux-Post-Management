@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 
 import { postAdded } from "./postSlice";
@@ -18,6 +18,7 @@ function AddPostForm() {
     const onTitleChange = e => setTitle(e.target.value);
     const onContentChange = e => setContent(e.target.value);
     const onAuthorChange = e => setUserId(e.target.value);
+    // console.log(userId);
 
     const onSavePostClicked = (event) => {
         event.preventDefault();
@@ -32,7 +33,7 @@ function AddPostForm() {
         }
     };
 
-    const canSave = Boolean(title) && Boolean(content) && Boolean(useId);
+    const canSave = Boolean(title) && Boolean(content) && Boolean(userId);
 
     const userOptions = users.map(user => (
         <option key={user.id} value={user.id}>
@@ -58,7 +59,12 @@ function AddPostForm() {
 
                 <div>
                     <label htmlFor="author">Post Author:</label>
-                    <select name="author" id="author" value={userId} onChange={onAuthorChange}>
+                    <select
+                        name="author"
+                        id="author"
+                        value={userId}
+                        onChange={onAuthorChange}
+                    >
                         <option value=""></option>
                         {userOptions}
                     </select>
